@@ -20,27 +20,31 @@ jobs:
         id: diff
         run: |
           git fetch origin ${{ github.base_ref }}
-          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD)
-          echo "diff<<EOF" >> $GITHUB_OUTPUT
-          echo "$DIFF" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          git diff origin/${{ github.base_ref }}...HEAD > /tmp/pr-diff.txt
       
       - name: KISS Review
         id: kiss
         run: |
-          RESPONSE=$(curl -s https://openrouter.ai/api/v1/chat/completions \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.OPENROUTER_API_KEY }}" \
-            -d '{
-              "model": "x-ai/grok-code-fast-1",
-              "messages": [
+          DIFF=$(cat /tmp/pr-diff.txt | jq -Rs .)
+          PAYLOAD=$(jq -n \
+            --arg model "x-ai/grok-code-fast-1" \
+            --argjson diff "$DIFF" \
+            '{
+              model: $model,
+              messages: [
                 {
-                  "role": "user",
-                  "content": "Review this PR for unnecessary complexity. Challenge:\n- \"What if we need...\" assumptions\n- Features not explicitly required NOW\n- Multiple components that could be one\n- Clever solutions where boring ones work\n\nFlag anything violating KISS/YAGNI. Be ruthless. Bullet points only for real issues.\n\nPR Diff:\n```\n${{ steps.diff.outputs.diff }}\n```"
+                  role: "user",
+                  content: "Review this PR for unnecessary complexity. Challenge:\n- \"What if we need...\" assumptions\n- Features not explicitly required NOW\n- Multiple components that could be one\n- Clever solutions where boring ones work\n\nFlag anything violating KISS/YAGNI. Be ruthless. Bullet points only for real issues.\n\nPR Diff:\n```\n" + $diff + "\n```"
                 }
               ]
             }')
-          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+          
+          RESPONSE=$(curl -s https://openrouter.ai/api/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.OPENROUTER_API_KEY }}" \
+            -d "$PAYLOAD")
+          
+          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "No review generated"')
           echo "review<<EOF" >> $GITHUB_OUTPUT
           echo "$REVIEW" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -48,19 +52,26 @@ jobs:
       - name: Security Review
         id: security
         run: |
-          RESPONSE=$(curl -s https://openrouter.ai/api/v1/chat/completions \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.OPENROUTER_API_KEY }}" \
-            -d '{
-              "model": "x-ai/grok-code-fast-1",
-              "messages": [
+          DIFF=$(cat /tmp/pr-diff.txt | jq -Rs .)
+          PAYLOAD=$(jq -n \
+            --arg model "x-ai/grok-code-fast-1" \
+            --argjson diff "$DIFF" \
+            '{
+              model: $model,
+              messages: [
                 {
-                  "role": "user",
-                  "content": "Security review only. Flag critical issues:\n- Auth/authorization problems\n- Input validation gaps\n- SQL injection, XSS vulnerabilities\n- Secret exposure\n- SSRF, RCE risks\n\nBullet points only. Skip minor concerns.\n\nPR Diff:\n```\n${{ steps.diff.outputs.diff }}\n```"
+                  role: "user",
+                  content: "Security review only. Flag critical issues:\n- Auth/authorization problems\n- Input validation gaps\n- SQL injection, XSS vulnerabilities\n- Secret exposure\n- SSRF, RCE risks\n\nBullet points only. Skip minor concerns.\n\nPR Diff:\n```\n" + $diff + "\n```"
                 }
               ]
             }')
-          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+          
+          RESPONSE=$(curl -s https://openrouter.ai/api/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.OPENROUTER_API_KEY }}" \
+            -d "$PAYLOAD")
+          
+          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "No review generated"')
           echo "review<<EOF" >> $GITHUB_OUTPUT
           echo "$REVIEW" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
