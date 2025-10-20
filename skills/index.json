@@ -8,6 +8,22 @@
       "tags": ["example", "template"],
       "dependencies": [],
       "files": ["skill.js", "config.json", "README.md"]
+    },
+    {
+      "name": "changelog-generator",
+      "description": "Automatically creates user-facing changelogs from git commits",
+      "version": "1.0.0",
+      "author": "Theopsguide",
+      "originalAuthor": "ComposioHQ",
+      "tags": ["git", "changelog", "release-notes", "documentation", "automation"],
+      "dependencies": [],
+      "files": ["skill.js", "config.json", "README.md"],
+      "capabilities": [
+        "git-history-analysis",
+        "commit-categorization",
+        "user-friendly-translation",
+        "markdown-generation"
+      ]
     }
   ]
 }
