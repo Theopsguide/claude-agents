@@ -1,18 +1,18 @@
-# Claude Skills
+# claude-agents
 
-CLI-installable Claude skills and sub-agents for enhancing Claude Code capabilities.
+CLI-installable Claude agents and sub-agents for enhancing Claude Code capabilities.
 
 ## Quick Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Theopsguide/claude-skills/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Theopsguide/claude-agents/main/install.sh | bash
 ```
 
 ## Manual Install
 
 ```bash
-git clone https://github.com/Theopsguide/claude-skills.git
-cd claude-skills
+git clone https://github.com/Theopsguide/claude-agents.git
+cd claude-agents
 chmod +x install.sh
 ./install.sh
 ```
@@ -36,7 +36,7 @@ claude-subagent list
 ## Directory Structure
 
 ```
-claude-skills/
+claude-agents/
 ├── skills/           # Claude skills
 │   └── example/     # Example skill
 ├── subagents/       # Sub-agents
