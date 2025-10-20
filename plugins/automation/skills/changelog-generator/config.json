@@ -1,0 +1,28 @@
+{
+  "name": "changelog-generator",
+  "enabled": true,
+  "version": "1.0.0",
+  "description": "Automatically creates user-facing changelogs from git commits",
+  "author": "Theopsguide",
+  "originalAuthor": "ComposioHQ",
+  "settings": {
+    "debug": false,
+    "defaultRange": "HEAD~10",
+    "outputFormat": "markdown",
+    "includeAuthor": false,
+    "includeHash": false,
+    "excludeMergeCommits": true,
+    "categories": {
+      "feat": "✨ New Features",
+      "fix": "🐛 Bug Fixes",
+      "perf": "⚡ Performance",
+      "docs": "📚 Documentation",
+      "style": "💎 Style",
+      "refactor": "♻️ Code Refactoring",
+      "test": "🧪 Tests",
+      "chore": "🔧 Chores",
+      "security": "🔒 Security",
+      "breaking": "💥 Breaking Changes"
+    }
+  }
+}

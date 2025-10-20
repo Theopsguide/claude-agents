@@ -1,0 +1,93 @@
+{
+  "name": "claude-skills",
+  "version": "1.0.0",
+  "description": "CLI-installable Claude skills and sub-agents organized into focused plugins",
+  "author": "Theopsguide",
+  "repository": "https://github.com/Theopsguide/claude-skills",
+  "plugins": [
+    {
+      "name": "development-workflow",
+      "description": "Skills for software development workflow and planning",
+      "category": "development",
+      "agents": [],
+      "commands": [],
+      "skills": [
+        "brainstorming",
+        "writing-plans",
+        "executing-plans",
+        "finishing-a-development-branch",
+        "using-git-worktrees"
+      ]
+    },
+    {
+      "name": "testing-quality",
+      "description": "Skills for testing and quality assurance",
+      "category": "testing",
+      "agents": [],
+      "commands": [],
+      "skills": [
+        "test-driven-development",
+        "testing-anti-patterns",
+        "condition-based-waiting",
+        "verification-before-completion"
+      ]
+    },
+    {
+      "name": "code-review",
+      "description": "Skills for code review processes",
+      "category": "development",
+      "agents": [],
+      "commands": [],
+      "skills": [
+        "requesting-code-review",
+        "receiving-code-review"
+      ]
+    },
+    {
+      "name": "debugging",
+      "description": "Skills for debugging and troubleshooting",
+      "category": "development",
+      "agents": [],
+      "commands": [],
+      "skills": [
+        "systematic-debugging",
+        "root-cause-tracing",
+        "defense-in-depth"
+      ]
+    },
+    {
+      "name": "agent-orchestration",
+      "description": "Skills for multi-agent coordination and parallel processing",
+      "category": "orchestration",
+      "agents": [],
+      "commands": [],
+      "skills": [
+        "dispatching-parallel-agents",
+        "subagent-driven-development"
+      ]
+    },
+    {
+      "name": "meta-skills",
+      "description": "Skills about creating and managing skills",
+      "category": "meta",
+      "agents": [],
+      "commands": [],
+      "skills": [
+        "writing-skills",
+        "testing-skills-with-subagents",
+        "sharing-skills",
+        "using-superpowers"
+      ]
+    },
+    {
+      "name": "automation",
+      "description": "Automation tools and utilities",
+      "category": "automation",
+      "agents": [],
+      "commands": [],
+      "skills": [
+        "changelog-generator"
+      ]
+    }
+  ]
+}
