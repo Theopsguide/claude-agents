@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Claude Skills Installation Script
-# Simple, minimal installer for Claude skills and sub-agents
+# claude-agents Installation Script
+# Simple, minimal installer for Claude agents and sub-agents
 
 set -e
 
 # Configuration
 INSTALL_DIR="$HOME/.claude"
-REPO_URL="https://github.com/Theopsguide/claude-skills.git"
+REPO_URL="https://github.com/Theopsguide/claude-agents.git"
 SKILLS_DIR="$INSTALL_DIR/skills"
 AGENTS_DIR="$INSTALL_DIR/subagents"
 
