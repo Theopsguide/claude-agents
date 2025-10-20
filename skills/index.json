@@ -24,6 +24,26 @@
         "user-friendly-translation",
         "markdown-generation"
       ]
+    },
+    {
+      "name": "skill-seekers",
+      "description": "Transforms any documentation website into a production-ready Claude AI skill",
+      "version": "1.0.0",
+      "author": "Theopsguide",
+      "originalAuthor": "yusufkaraaslan",
+      "tags": ["documentation", "scraping", "automation", "ai-enhancement", "mcp-server", "skill-generation"],
+      "dependencies": ["python3", "pip"],
+      "files": ["skill.js", "config.json", "README.md"],
+      "capabilities": [
+        "documentation-scraping",
+        "content-categorization",
+        "code-extraction",
+        "ai-enhancement",
+        "skill-packaging",
+        "mcp-server-setup",
+        "parallel-processing",
+        "checkpoint-resume"
+      ]
     }
   ]
 }

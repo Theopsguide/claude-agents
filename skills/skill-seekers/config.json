@@ -1,0 +1,41 @@
+{
+  "name": "skill-seekers",
+  "enabled": true,
+  "version": "1.0.0",
+  "description": "Transforms any documentation website into a production-ready Claude AI skill",
+  "author": "Theopsguide",
+  "originalAuthor": "yusufkaraaslan",
+  "settings": {
+    "debug": false,
+    "autoEnhance": false,
+    "autoPackage": false,
+    "maxBufferSize": 10485760,
+    "tempDir": "/tmp/skill-seekers",
+    "outputDir": "./generated-skills",
+    "supportedFormats": [
+      "markdown",
+      "html",
+      "documentation-sites"
+    ],
+    "presetConfigs": [
+      "godot",
+      "react",
+      "vue",
+      "django",
+      "fastapi",
+      "nextjs",
+      "tailwind",
+      "typescript"
+    ],
+    "features": {
+      "scraping": true,
+      "aiEnhancement": true,
+      "packaging": true,
+      "pageEstimation": true,
+      "mcpServer": true,
+      "caching": true,
+      "checkpointResume": true,
+      "parallelProcessing": true
+    }
+  }
+}
