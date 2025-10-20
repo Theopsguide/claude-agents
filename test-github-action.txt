@@ -1,0 +1,4 @@
+This is a simple test file to verify GitHub Actions are working correctly.
+
+Created on: 2025-10-20
+Purpose: Testing GitHub Action triggers
