@@ -1,0 +1,13 @@
+{
+  "skills": [
+    {
+      "name": "example-skill",
+      "description": "Example skill showing the structure",
+      "version": "1.0.0",
+      "author": "Theopsguide",
+      "tags": ["example", "template"],
+      "dependencies": [],
+      "files": ["skill.js", "config.json", "README.md"]
+    }
+  ]
+}

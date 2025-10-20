@@ -1,0 +1,13 @@
+{
+  "subagents": [
+    {
+      "name": "example-agent",
+      "description": "Example sub-agent showing the structure",
+      "version": "1.0.0",
+      "author": "Theopsguide",
+      "type": "assistant",
+      "capabilities": ["text", "code"],
+      "files": ["agent.js", "config.json", "README.md"]
+    }
+  ]
+}

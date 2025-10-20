@@ -1,0 +1,16 @@
+{
+  "name": "example-agent",
+  "type": "assistant",
+  "enabled": true,
+  "version": "1.0.0",
+  "capabilities": [
+    "text-processing",
+    "code-generation",
+    "pattern-matching"
+  ],
+  "settings": {
+    "debug": false,
+    "maxTokens": 4096,
+    "temperature": 0.7
+  }
+}
