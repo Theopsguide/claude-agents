@@ -347,12 +347,14 @@ We welcome contributions! Here's how:
 1. Create a directory under `skills/` with your skill name
 2. Add your skill files and SKILL.md
 3. Update `skills/index.json` with skill metadata
+4. Push changes
 
 ### Adding Sub-agents
 
 1. Create a directory under `plugins/<plugin-name>/agents/<agent-name>/`
 2. Add your agent files
 3. Update plugin metadata in `.claude-plugin/marketplace.json`
+4. Push changes
 
 For detailed contribution guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 

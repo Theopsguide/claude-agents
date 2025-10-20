@@ -16,63 +16,109 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: Get PR diff
-        id: diff
+      - name: Run Reviews
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          git fetch origin ${{ github.base_ref }}
-          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD)
-          echo "diff<<EOF" >> $GITHUB_OUTPUT
-          echo "$DIFF" >> $GITHUB_OUTPUT
+          # Get diff (limit to first 50,000 characters to avoid jq issues)
+          git fetch origin $BASE_REF
+          DIFF=$(git diff origin/$BASE_REF...HEAD | head -c 50000)
+          
+          # If diff was truncated, add note
+          if [ ${#DIFF} -eq 50000 ]; then
+            DIFF="${DIFF}\n\n[Diff truncated - PR too large for single review]"
+          fi
+          
+          # Create Python script to handle API calls
+          cat > review.py << 'PYTHON_SCRIPT'
+import os
+import json
+import requests
+import sys
+
+api_key = os.environ['OPENROUTER_API_KEY']
+diff = sys.stdin.read()
+
+def call_grok(prompt):
+    response = requests.post(
+        'https://openrouter.ai/api/v1/chat/completions',
+        headers={
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {api_key}'
+        },
+        json={
+            'model': 'x-ai/grok-code-fast-1',
+            'messages': [{
+                'role': 'user',
+                'content': f'{prompt}\n\nPR Diff:\n```\n{diff}\n```'
+            }]
+        }
+    )
+    return response.json()['choices'][0]['message']['content']
+
+# KISS Review
+kiss_prompt = """Review this PR for unnecessary complexity. Challenge:
+- "What if we need..." assumptions
+- Features not explicitly required NOW
+- Multiple components that could be one
+- Clever solutions where boring ones work
+
+Flag anything violating KISS/YAGNI. Be ruthless. Bullet points only for real issues."""
+
+kiss_review = call_grok(kiss_prompt)
+
+# Security Review
+security_prompt = """Security review only. Flag critical issues:
+- Auth/authorization problems
+- Input validation gaps
+- SQL injection, XSS vulnerabilities
+- Secret exposure
+- SSRF, RCE risks
+
+Bullet points only. Skip minor concerns."""
+
+security_review = call_grok(security_prompt)
+
+# Output for GitHub
+print("KISS_REVIEW<<EOF")
+print(kiss_review)
+print("EOF")
+print("SECURITY_REVIEW<<EOF")
+print(security_review)
+print("EOF")
+PYTHON_SCRIPT
+
+          # Run reviews
+          echo "$DIFF" | python3 review.py > reviews.txt
+          
+          # Extract reviews
+          KISS_REVIEW=$(sed -n '/KISS_REVIEW<<EOF/,/^EOF$/p' reviews.txt | sed '1d;$d')
+          SECURITY_REVIEW=$(sed -n '/SECURITY_REVIEW<<EOF/,/^EOF$/p' reviews.txt | sed '1d;$d')
+          
+          # Save for next step
+          echo "kiss<<EOF" >> $GITHUB_OUTPUT
+          echo "$KISS_REVIEW" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-      
-      - name: KISS Review
-        id: kiss
-        run: |
-          RESPONSE=$(curl -s https://openrouter.ai/api/v1/chat/completions \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.OPENROUTER_API_KEY }}" \
-            -d '{
-              "model": "x-ai/grok-code-fast-1",
-              "messages": [
-                {
-                  "role": "user",
-                  "content": "Review this PR for unnecessary complexity. Challenge:\n- \"What if we need...\" assumptions\n- Features not explicitly required NOW\n- Multiple components that could be one\n- Clever solutions where boring ones work\n\nFlag anything violating KISS/YAGNI. Be ruthless. Bullet points only for real issues.\n\nPR Diff:\n```\n${{ steps.diff.outputs.diff }}\n```"
-                }
-              ]
-            }')
-          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
-          echo "review<<EOF" >> $GITHUB_OUTPUT
-          echo "$REVIEW" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-      
-      - name: Security Review
-        id: security
-        run: |
-          RESPONSE=$(curl -s https://openrouter.ai/api/v1/chat/completions \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.OPENROUTER_API_KEY }}" \
-            -d '{
-              "model": "x-ai/grok-code-fast-1",
-              "messages": [
-                {
-                  "role": "user",
-                  "content": "Security review only. Flag critical issues:\n- Auth/authorization problems\n- Input validation gaps\n- SQL injection, XSS vulnerabilities\n- Secret exposure\n- SSRF, RCE risks\n\nBullet points only. Skip minor concerns.\n\nPR Diff:\n```\n${{ steps.diff.outputs.diff }}\n```"
-                }
-              ]
-            }')
-          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
-          echo "review<<EOF" >> $GITHUB_OUTPUT
-          echo "$REVIEW" >> $GITHUB_OUTPUT
+          
+          echo "security<<EOF" >> $GITHUB_OUTPUT
+          echo "$SECURITY_REVIEW" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
       
       - name: Post Review Comment
         uses: actions/github-script@v7
         with:
           script: |
-            const kissReview = `${{ steps.kiss.outputs.review }}`;
-            const securityReview = `${{ steps.security.outputs.review }}`;
-            
-            const body = `## 🤖 Automated Review\n\n### KISS Simplification Check\n${kissReview}\n\n### Security Review\n${securityReview}`;
+            const body = `## 🤖 Automated Review
+
+### KISS Simplification Check
+${{ steps.run-reviews.outputs.kiss }}
+
+### Security Review
+${{ steps.run-reviews.outputs.security }}`;
             
             github.rest.issues.createComment({
               owner: context.repo.owner,
