@@ -1,7 +1,5 @@
 # claude-agents
 
-> **Note:** Recently updated with 27 production-ready plugins for enhanced development workflows.
-
 Production-ready Claude Code plugins, skills, and agents for solo developers and small teams - no Kubernetes complexity, just practical development tools.
 
 ## Quick Install
