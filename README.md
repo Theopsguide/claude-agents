@@ -1,23 +1,21 @@
 # claude-agents
 
-<<<<<<< HEAD
-> **CLI-installable Claude skills and sub-agents organized into focused plugins for enhancing Claude Code capabilities.**
-=======
-CLI-installable Claude agents and sub-agents for enhancing Claude Code capabilities.
->>>>>>> origin/main
+Production-ready Claude Code plugins, skills, and agents for solo developers and small teams - no Kubernetes complexity, just practical development tools.
 
-A comprehensive collection of **21 specialized skills** organized into **7 focused plugins** to supercharge your Claude Code development workflow.
+A comprehensive collection of **27 production-ready plugins** and **21 specialized skills** organized into focused categories to supercharge your Claude Code development workflow.
 
 ## Table of Contents
 
 - [Quick Start](#quick-start)
-- [All Skills (Quick Search)](#all-skills-quick-search)
-- [All Agents (Quick Search)](#all-agents-quick-search)
-- [Plugins by Category](#plugins-by-category)
+- [What's New: 27 Production Plugins](#whats-new-27-production-plugins)
+- [All Skills (Quick Reference)](#all-skills-quick-reference)
+- [All Agents (Quick Reference)](#all-agents-quick-reference)
+- [Skills by Category](#skills-by-category)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Repository Structure](#repository-structure)
 - [Contributing](#contributing)
+- [Attribution](#attribution)
 
 ---
 
@@ -25,10 +23,15 @@ A comprehensive collection of **21 specialized skills** organized into **7 focus
 
 ```bash
 # Quick Install
-curl -fsSL https://raw.githubusercontent.com/Theopsguide/claude-skills/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Theopsguide/claude-agents/main/install.sh | bash
 
-# List available skills
+# List available items
+claude-plugin list
 claude-skill list
+claude-subagent list
+
+# Install a specific plugin
+claude-plugin install <plugin-name>
 
 # Install a specific skill
 claude-skill install <skill-name>
@@ -36,7 +39,59 @@ claude-skill install <skill-name>
 
 ---
 
-## All Skills (Quick Search)
+## What's New: 27 Production Plugins
+
+This repository now includes **27 production-ready plugins** imported and curated for practical development workflows.
+
+### Core Development (8 plugins)
+Essential tools for daily development work:
+
+- **debugging-toolkit** - Problem solving fundamentals and smart debugging workflows
+- **python-development** - Python development with FastAPI, Django, and async patterns
+- **javascript-typescript** - Frontend/full-stack JavaScript and TypeScript development
+- **backend-development** - API design, architecture patterns, and microservices
+- **git-pr-workflows** - Version control, pull requests, and team onboarding
+- **code-documentation** - Technical writing and automated documentation generation
+- **unit-testing** - Test automation for Python and JavaScript
+- **code-review-ai** - AI-powered architectural review and quality analysis
+
+### Database & Data (3 plugins)
+
+- **database-design** - Schema design and database architecture
+- **database-migrations** - Safe database change management
+- **data-engineering** - ETL pipelines and data processing workflows
+
+### Infrastructure & Operations (6 plugins)
+
+- **cloud-infrastructure** - AWS/Azure/GCP deployment (no K8s complexity)
+- **cicd-automation** - Automated build and deployment pipelines
+- **deployment-strategies** - Deployment patterns and strategies
+- **incident-response** - Production problem solving and diagnostics
+- **error-diagnostics** - Root cause analysis and debugging
+- **application-performance** - Performance optimization and monitoring
+
+### Quality & Maintenance (4 plugins)
+
+- **code-refactoring** - Technical debt management and code cleanup
+- **dependency-management** - Dependency auditing and security scanning
+- **security-scanning** - Vulnerability detection and security analysis
+- **backend-api-security** - API security hardening and best practices
+
+### Business/Content (5 plugins)
+
+- **seo-content-creation** - SEO content strategy and creation
+- **seo-technical-optimization** - Technical SEO implementation
+- **content-marketing** - Content marketing and growth strategies
+- **business-analytics** - KPI tracking and business metrics
+- **api-scaffolding** - Quick API generation and scaffolding
+
+### Additional Plugins
+
+- **frontend-mobile-development** - UI development and cross-platform mobile apps
+
+---
+
+## All Skills (Quick Reference)
 
 Complete alphabetical listing of all 21 skills for quick reference:
 
@@ -66,7 +121,7 @@ Complete alphabetical listing of all 21 skills for quick reference:
 
 ---
 
-## All Agents (Quick Search)
+## All Agents (Quick Reference)
 
 Currently available sub-agents:
 
@@ -78,7 +133,7 @@ Currently available sub-agents:
 
 ---
 
-## Plugins by Category
+## Skills by Category
 
 ### 🔧 Development Workflow
 **Plugin:** `development-workflow`
@@ -169,6 +224,9 @@ chmod +x install.sh
 After installation, use these commands:
 
 ```bash
+# Install a plugin
+claude-plugin install <plugin-name>
+
 # Install a skill
 claude-skill install <skill-name>
 
@@ -176,6 +234,7 @@ claude-skill install <skill-name>
 claude-subagent install <agent-name>
 
 # List available items
+claude-plugin list
 claude-skill list
 claude-subagent list
 
@@ -200,62 +259,69 @@ claude-plugin install testing-quality
 claude-plugin install debugging
 ```
 
+**4. Install production-ready Python development tools:**
+```bash
+claude-plugin install python-development
+```
+
 ---
 
 ## Repository Structure
 
 ```
 claude-agents/
-├── .claude-plugin/
-│   └── marketplace.json      # Plugin configuration and metadata
-├── plugins/                  # Plugin-based organization
-│   ├── development-workflow/
-│   │   ├── agents/          # Sub-agents for this category
-│   │   ├── commands/        # Slash commands
-│   │   └── skills/          # Skills (brainstorming, writing-plans, etc.)
-│   ├── testing-quality/
-│   │   ├── agents/
-│   │   ├── commands/
-│   │   └── skills/          # Skills (test-driven-development, etc.)
-│   ├── code-review/
-│   ├── debugging/
-│   ├── agent-orchestration/
-│   ├── meta-skills/
-│   └── automation/
-├── skills/                   # Legacy flat structure (maintained for compatibility)
-├── subagents/               # Legacy sub-agents directory
-├── docs/                    # Documentation
-└── install.sh               # Installation script
+├── .claude-plugin/              # Plugin marketplace manifest
+│   └── marketplace.json         # Plugin configuration and metadata
+├── plugins/                     # 27 production-ready plugins
+│   ├── debugging-toolkit/
+│   ├── python-development/
+│   ├── javascript-typescript/
+│   ├── backend-development/
+│   ├── git-pr-workflows/
+│   ├── code-documentation/
+│   ├── unit-testing/
+│   ├── code-review-ai/
+│   ├── database-design/
+│   ├── database-migrations/
+│   ├── data-engineering/
+│   ├── cloud-infrastructure/
+│   ├── cicd-automation/
+│   ├── deployment-strategies/
+│   ├── incident-response/
+│   ├── error-diagnostics/
+│   ├── application-performance/
+│   ├── code-refactoring/
+│   ├── dependency-management/
+│   ├── security-scanning/
+│   ├── backend-api-security/
+│   ├── seo-content-creation/
+│   ├── seo-technical-optimization/
+│   ├── content-marketing/
+│   ├── business-analytics/
+│   ├── api-scaffolding/
+│   └── frontend-mobile-development/
+├── skills/                      # 21 specialized skills
+│   ├── brainstorming/
+│   ├── systematic-debugging/
+│   ├── test-driven-development/
+│   └── ...
+├── subagents/                   # Specialized sub-agents
+│   └── example-agent/
+└── install.sh                   # Installation script
 ```
 
 **Each plugin is completely isolated** with its own agents, commands, and skills. Install only what you need!
 
 ---
 
-## Adding Skills
+## Philosophy
 
-### To Plugin Structure (Recommended)
+This collection is curated for **solo developers and small teams** who need:
 
-1. Choose or create a plugin directory under `plugins/`
-2. Add your skill files to `plugins/<plugin-name>/skills/<skill-name>/`
-3. Update `.claude-plugin/marketplace.json` with skill metadata
-4. Push changes
-
-### To Legacy Structure (Compatibility)
-
-1. Create a directory under `skills/` with your skill name
-2. Add your skill files
-3. Update `skills/index.json` with skill metadata
-4. Push changes
-
----
-
-## Adding Sub-agents
-
-1. Create a directory under `plugins/<plugin-name>/agents/<agent-name>/`
-2. Add your agent files
-3. Update plugin metadata in `.claude-plugin/marketplace.json`
-4. Push changes
+- Production-ready tools without over-engineering
+- Simple deployment strategies (skip the Kubernetes complexity)
+- Quality without excessive ceremony
+- Practical workflows over theoretical perfection
 
 ---
 
@@ -263,21 +329,42 @@ claude-agents/
 
 We welcome contributions! Here's how:
 
-1. Fork the repository
-2. Create a feature branch
-3. Add your skill/agent following the structure above
-4. Update relevant index files and documentation
-5. Submit a pull request
+### Adding Plugins
+
+1. Create a directory under `plugins/` with your plugin name
+2. Add agents, commands, and skills subdirectories
+3. Update `.claude-plugin/marketplace.json` with plugin metadata
+4. Push changes
+
+### Adding Skills
+
+**To Plugin Structure (Recommended):**
+1. Choose or create a plugin directory under `plugins/`
+2. Add your skill files to `plugins/<plugin-name>/skills/<skill-name>/`
+3. Update `.claude-plugin/marketplace.json` with skill metadata
+
+**To Legacy Structure (Compatibility):**
+1. Create a directory under `skills/` with your skill name
+2. Add your skill files and SKILL.md
+3. Update `skills/index.json` with skill metadata
+4. Push changes
+
+### Adding Sub-agents
+
+1. Create a directory under `plugins/<plugin-name>/agents/<agent-name>/`
+2. Add your agent files
+3. Update plugin metadata in `.claude-plugin/marketplace.json`
+4. Push changes
 
 For detailed contribution guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ---
 
-## Credits
+## Attribution
 
-This repository includes skills from:
-- [obra/superpowers](https://github.com/obra/superpowers) - 20 imported skills
-- [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) - changelog-generator
+**Skills:** Imported from [obra/superpowers](https://github.com/obra/superpowers) and [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills)
+
+**Plugins:** Curated from [wshobson/agents](https://github.com/wshobson/agents) and optimized for The Operations Guide workflows
 
 ---
 
@@ -290,8 +377,8 @@ MIT License - See [LICENSE](./LICENSE) file for details.
 ## Need Help?
 
 - 📖 [Documentation](./docs/)
-- 🐛 [Report Issues](https://github.com/Theopsguide/claude-skills/issues)
-- 💬 [Discussions](https://github.com/Theopsguide/claude-skills/discussions)
+- 🐛 [Report Issues](https://github.com/Theopsguide/claude-agents/issues)
+- 💬 [Discussions](https://github.com/Theopsguide/claude-agents/discussions)
 
 ---
 
