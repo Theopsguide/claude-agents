@@ -1,6 +1,10 @@
-# Claude Skills
+# claude-agents
 
+<<<<<<< HEAD
 > **CLI-installable Claude skills and sub-agents organized into focused plugins for enhancing Claude Code capabilities.**
+=======
+CLI-installable Claude agents and sub-agents for enhancing Claude Code capabilities.
+>>>>>>> origin/main
 
 A comprehensive collection of **21 specialized skills** organized into **7 focused plugins** to supercharge your Claude Code development workflow.
 
@@ -146,14 +150,14 @@ Tools and utilities for automation.
 ### Quick Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Theopsguide/claude-skills/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Theopsguide/claude-agents/main/install.sh | bash
 ```
 
 ### Manual Install
 
 ```bash
-git clone https://github.com/Theopsguide/claude-skills.git
-cd claude-skills
+git clone https://github.com/Theopsguide/claude-agents.git
+cd claude-agents
 chmod +x install.sh
 ./install.sh
 ```
@@ -201,7 +205,7 @@ claude-plugin install debugging
 ## Repository Structure
 
 ```
-claude-skills/
+claude-agents/
 ├── .claude-plugin/
 │   └── marketplace.json      # Plugin configuration and metadata
 ├── plugins/                  # Plugin-based organization
@@ -222,7 +226,6 @@ claude-skills/
 ├── subagents/               # Legacy sub-agents directory
 ├── docs/                    # Documentation
 └── install.sh               # Installation script
-
 ```
 
 **Each plugin is completely isolated** with its own agents, commands, and skills. Install only what you need!
