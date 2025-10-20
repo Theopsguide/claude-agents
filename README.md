@@ -382,4 +382,4 @@ MIT License - See [LICENSE](./LICENSE) file for details.
 
 ---
 
-**Made with ❤️ for the Claude Code community**
+Made with ❤️ from Big Tex
