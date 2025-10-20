@@ -15,98 +15,99 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      
+      - name: Install requests
+        run: pip install requests
           
       - name: Run Reviews
+        id: run-reviews
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
           BASE_REF: ${{ github.base_ref }}
         run: |
-          # Get diff (limit to first 50,000 characters to avoid jq issues)
+          # Get diff (limit to first 50,000 characters)
           git fetch origin $BASE_REF
           DIFF=$(git diff origin/$BASE_REF...HEAD | head -c 50000)
           
-          # If diff was truncated, add note
+          # If truncated, add note
           if [ ${#DIFF} -eq 50000 ]; then
-            DIFF="${DIFF}\n\n[Diff truncated - PR too large for single review]"
+            DIFF="${DIFF}\n\n[Diff truncated - PR too large]"
           fi
           
-          # Create Python script to handle API calls
-          cat > review.py << 'PYTHON_SCRIPT'
-import os
-import json
-import requests
-import sys
-
-api_key = os.environ['OPENROUTER_API_KEY']
-diff = sys.stdin.read()
-
-def call_grok(prompt):
-    response = requests.post(
-        'https://openrouter.ai/api/v1/chat/completions',
-        headers={
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {api_key}'
-        },
-        json={
-            'model': 'x-ai/grok-code-fast-1',
-            'messages': [{
-                'role': 'user',
-                'content': f'{prompt}\n\nPR Diff:\n```\n{diff}\n```'
-            }]
-        }
-    )
-    return response.json()['choices'][0]['message']['content']
-
-# KISS Review
-kiss_prompt = """Review this PR for unnecessary complexity. Challenge:
-- "What if we need..." assumptions
-- Features not explicitly required NOW
-- Multiple components that could be one
-- Clever solutions where boring ones work
-
-Flag anything violating KISS/YAGNI. Be ruthless. Bullet points only for real issues."""
-
-kiss_review = call_grok(kiss_prompt)
-
-# Security Review
-security_prompt = """Security review only. Flag critical issues:
-- Auth/authorization problems
-- Input validation gaps
-- SQL injection, XSS vulnerabilities
-- Secret exposure
-- SSRF, RCE risks
-
-Bullet points only. Skip minor concerns."""
-
-security_review = call_grok(security_prompt)
-
-# Output for GitHub
-print("KISS_REVIEW<<EOF")
-print(kiss_review)
-print("EOF")
-print("SECURITY_REVIEW<<EOF")
-print(security_review)
-print("EOF")
-PYTHON_SCRIPT
-
+          # Create review script
+          cat > review.py << 'EOF'
+          import os
+          import json
+          import requests
+          import sys
+          
+          api_key = os.environ['OPENROUTER_API_KEY']
+          diff = sys.stdin.read()
+          
+          def call_grok(prompt):
+              response = requests.post(
+                  'https://openrouter.ai/api/v1/chat/completions',
+                  headers={
+                      'Content-Type': 'application/json',
+                      'Authorization': f'Bearer {api_key}'
+                  },
+                  json={
+                      'model': 'x-ai/grok-code-fast-1',
+                      'messages': [{
+                          'role': 'user',
+                          'content': f'{prompt}\n\nPR Diff:\n```\n{diff}\n```'
+                      }]
+                  }
+              )
+              return response.json()['choices'][0]['message']['content']
+          
+          kiss_prompt = """Review this PR for unnecessary complexity. Challenge:
+          - "What if we need..." assumptions
+          - Features not explicitly required NOW
+          - Multiple components that could be one
+          - Clever solutions where boring ones work
+          
+          Flag anything violating KISS/YAGNI. Be ruthless. Bullet points only for real issues."""
+          
+          security_prompt = """Security review only. Flag critical issues:
+          - Auth/authorization problems
+          - Input validation gaps
+          - SQL injection, XSS vulnerabilities
+          - Secret exposure
+          - SSRF, RCE risks
+          
+          Bullet points only. Skip minor concerns."""
+          
+          kiss_review = call_grok(kiss_prompt)
+          security_review = call_grok(security_prompt)
+          
+          print("KISS_REVIEW<<ENDOFKISS")
+          print(kiss_review)
+          print("ENDOFKISS")
+          print("SECURITY_REVIEW<<ENDOFSEC")
+          print(security_review)
+          print("ENDOFSEC")
+          EOF
+          
           # Run reviews
           echo "$DIFF" | python3 review.py > reviews.txt
           
           # Extract reviews
-          KISS_REVIEW=$(sed -n '/KISS_REVIEW<<EOF/,/^EOF$/p' reviews.txt | sed '1d;$d')
-          SECURITY_REVIEW=$(sed -n '/SECURITY_REVIEW<<EOF/,/^EOF$/p' reviews.txt | sed '1d;$d')
+          KISS_REVIEW=$(sed -n '/KISS_REVIEW<<ENDOFKISS/,/^ENDOFKISS$/p' reviews.txt | sed '1d;$d')
+          SECURITY_REVIEW=$(sed -n '/SECURITY_REVIEW<<ENDOFSEC/,/^ENDOFSEC$/p' reviews.txt | sed '1d;$d')
           
-          # Save for next step
-          echo "kiss<<EOF" >> $GITHUB_OUTPUT
-          echo "$KISS_REVIEW" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Save outputs
+          {
+            echo "kiss<<ENDOFKISS"
+            echo "$KISS_REVIEW"
+            echo "ENDOFKISS"
+          } >> $GITHUB_OUTPUT
           
-          echo "security<<EOF" >> $GITHUB_OUTPUT
-          echo "$SECURITY_REVIEW" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "security<<ENDOFSEC"
+            echo "$SECURITY_REVIEW"
+            echo "ENDOFSEC"
+          } >> $GITHUB_OUTPUT
       
       - name: Post Review Comment
         uses: actions/github-script@v7
