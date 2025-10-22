@@ -366,6 +366,31 @@
         "persuasion-principles.md",
         "SKILL.md"
       ]
+    },
+    {
+      "name": "luke-writing-framework",
+      "description": "Comprehensive writing framework for creating content in Luke Thompson's authentic voice, emphasizing simplicity, practical applications, and actionable insights for business operations and technology",
+      "version": "1.0.0",
+      "author": "Theopsguide",
+      "tags": [
+        "writing",
+        "content-creation",
+        "voice-guidelines",
+        "operations",
+        "technology"
+      ],
+      "dependencies": [],
+      "files": [
+        "README.md",
+        "SKILL.md"
+      ],
+      "capabilities": [
+        "voice-and-tone-guidelines",
+        "content-structure-templates",
+        "formatting-rules",
+        "decision-framework",
+        "credibility-building"
+      ]
     }
   ]
 }
